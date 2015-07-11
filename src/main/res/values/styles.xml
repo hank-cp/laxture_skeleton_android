@@ -1,0 +1,60 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+           xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:alertDialogTheme" tools:ignore="NewApi">@style/CustomAlertDialogTheme</item>
+        <item name="android:buttonStyle">@style/AppTheme.Button</item>
+        <item name="android:imageButtonStyle">@style/AppTheme.ImageButton</item>
+        <!--<item name="android:checkboxStyle">@style/AppTheme.CheckBox</item>-->
+        <!--<item name="android:radioButtonStyle">@style/AppTheme.RadioButton</item>-->
+        <item name="android:textViewStyle">@style/AppTheme.TextView</item>
+        <!--<item name="android:listViewStyle">@style/AppTheme.ListView</item>-->
+    </style>
+
+    <!-- Common Widget Style -->
+
+    <style name="AppTheme.TextView" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="AppTheme.Button" parent="@android:style/Widget.Button">
+        <!--<item name="android:background">@drawable/btn_default</item>-->
+        <!--<item name="android:textColor">@color/btn_default</item>-->
+        <item name="android:textSize">18dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="CustomAlertDialogTheme.Button" parent="@style/AppTheme.Button">
+        <!--<item name="android:background">@drawable/btn_dialog</item>-->
+        <!--<item name="android:textColor">@color/btn_default</item>-->
+        <!--<item name="positiveButtonBackground">@drawable/btn_dialog_positive</item>-->
+        <item name="positiveButtonTextColor">@color/white</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="AppTheme.ImageButton" parent="@android:style/Widget.ImageButton">
+        <!--<item name="android:background">@drawable/btn_default</item>-->
+    </style>
+
+    <!-- Custom Style -->
+
+    <style name="ViewGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:layout_marginBottom">15dp</item>
+    </style>
+
+    <style name="ViewGroup.Fill" parent="ViewGroup">
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="ViewGroup.NoMargin" parent="ViewGroup">
+        <item name="android:layout_marginBottom">0dp</item>
+    </style>
+
+</resources>
