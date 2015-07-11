@@ -3,6 +3,12 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name" />
+        android:label="@string/app_name" >
+
+        <meta-data
+            android:name="roboguice.modules"
+            android:value="com.laxture.skeleton.ioc.CustomInjectionModule" />
+
+    </application>
 
 </manifest>
