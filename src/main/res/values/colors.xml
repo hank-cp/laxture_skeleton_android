@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="general_background">#EDEDED</color>
+    <color name="shadow">#06000000</color>
+    <color name="shadow_2">#03000000</color>
+    <color name="clickable_normal">#FFFFFF</color>
+    <color name="clickable_pressed">#F2F2F2</color>
+
+</resources>
