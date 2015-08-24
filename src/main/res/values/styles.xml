@@ -3,7 +3,7 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:alertDialogTheme" tools:ignore="NewApi">@style/CustomAlertDialogTheme</item>
+        <item name="android:alertDialogTheme">@style/CustomAlertDialogTheme</item>
         <item name="android:buttonStyle">@style/AppTheme.Button</item>
         <item name="android:imageButtonStyle">@style/AppTheme.ImageButton</item>
         <!--<item name="android:checkboxStyle">@style/AppTheme.CheckBox</item>-->

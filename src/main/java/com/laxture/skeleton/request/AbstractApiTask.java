@@ -72,12 +72,6 @@ public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
             resultJson = json.optJSONObject("result");
             resultJsonArray = json.optJSONArray("result");
         }
-
-        if (resultJson == null && resultJsonArray == null) {
-            LLog.w("Process api response failed.");
-            setErrorDetails(new ApiException(ApiException.RESPONSE_DATA_FORMAT_ERROR,
-                    RuntimeContext.getString(R.string.msg_http_err_server_error)));
-        }
     }
 
     public JSONObject getResultJson() {
@@ -94,6 +88,7 @@ public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
 
     public static HttpTaskConfig defaultHttpTaskConfig = new HttpTaskConfig();
     static {
+        defaultHttpTaskConfig.maxRetryCount = 1;
         defaultHttpTaskConfig.headers = new HashMap<>();
         defaultHttpTaskConfig.headers.put("platform", Integer.toString(Constants.REQ_ARG_PLATFORM_ANDROID));
         defaultHttpTaskConfig.headers.put("appVersion", RuntimeContext.getVersionName());

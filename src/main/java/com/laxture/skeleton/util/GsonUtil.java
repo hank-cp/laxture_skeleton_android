@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Date;
 
@@ -28,12 +29,9 @@ import com.laxture.lib.util.LLog;
 
 public class GsonUtil {
 
-    public static final String SKIP_FIELDS = "SKIP_FIELDS";
-    public static final String FIELDS_NAMING = "FIELDS_NAMING";
-
     private static final Gson GSON = new GsonBuilder()
             // skip static fields
-            .excludeFieldsWithModifiers(java.lang.reflect.Modifier.STATIC)
+            .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.PRIVATE)
             // skip fields annotated with @SkipJson
             .setExclusionStrategies(new SkipFieldExclusionStrategy())
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
@@ -46,7 +44,16 @@ public class GsonUtil {
      */
     public static <T> String toJson(T obj, Class<?> clazz) {
         try {
-            return GSON.toJson(obj);
+            return GSON.toJson(obj, clazz);
+        } catch (Exception e) {
+            LLog.e("Resolve Json Failed. Reason: %s", e, e.getMessage());
+            return null;
+        }
+    }
+
+    public static <T> JsonElement toJsonTree(T obj, Class<?> clazz) {
+        try {
+            return GSON.toJsonTree(obj, clazz);
         } catch (Exception e) {
             LLog.e("Resolve Json Failed. Reason: %s", e, e.getMessage());
             return null;
