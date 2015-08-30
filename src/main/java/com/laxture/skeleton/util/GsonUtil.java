@@ -1,17 +1,5 @@
 package com.laxture.skeleton.util;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.Date;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -23,9 +11,23 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.DateUtil;
 import com.laxture.lib.util.LLog;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.Date;
+import java.util.List;
 
 public class GsonUtil {
 
@@ -42,31 +44,18 @@ public class GsonUtil {
     /**
      * Util method for {@link Gson#toJson(Object, Type)}}
      */
-    public static <T> String toJson(T obj, Class<?> clazz) {
+    public static <T> String toJson(T obj) {
         try {
-            return GSON.toJson(obj, clazz);
+            return GSON.toJson(obj);
         } catch (Exception e) {
             LLog.e("Resolve Json Failed. Reason: %s", e, e.getMessage());
             return null;
         }
     }
 
-    public static <T> JsonElement toJsonTree(T obj, Class<?> clazz) {
+    public static <T> JsonElement toJsonTree(T obj) {
         try {
-            return GSON.toJsonTree(obj, clazz);
-        } catch (Exception e) {
-            LLog.e("Resolve Json Failed. Reason: %s", e, e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Util method for {@link Gson#fromJson(String, Class)}
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T fromJson(String string, Class<T> clazz) {
-        try {
-            return (T) GSON.fromJson(string, clazz);
+            return GSON.toJsonTree(obj);
         } catch (Exception e) {
             LLog.e("Resolve Json Failed. Reason: %s", e, e.getMessage());
             return null;
@@ -87,12 +76,38 @@ public class GsonUtil {
     }
 
     /**
+     * Util method for {@link Gson#fromJson(String, Class)}
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(String string, Class<?> clazz) {
+        try {
+            return (T) GSON.fromJson(string, clazz);
+        } catch (Exception e) {
+            LLog.e("Resolve Json Failed. Reason: %s", e, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Util method for {@link Gson#fromJson(JsonElement, Type)}}
      */
     @SuppressWarnings("unchecked")
-    public static <T> T fromJson(JsonElement json, Class<T> type){
+    public static <T> T fromJson(JsonElement json, Type type){
         try {
             return (T) GSON.fromJson(json, type);
+        } catch (Exception e) {
+            LLog.e("Resolve Json Failed. Reason: %s", e, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Util method for {@link Gson#fromJson(String, Class)}
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(JsonElement json, Class<?> clazz) {
+        try {
+            return (T) GSON.fromJson(json, clazz);
         } catch (Exception e) {
             LLog.e("Resolve Json Failed. Reason: %s", e, e.getMessage());
             return null;
