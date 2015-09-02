@@ -10,116 +10,48 @@ import com.laxture.skeleton.request.AbstractApiTask;
 import java.util.List;
 
 @SuppressLint("ViewConstructor")
-public abstract class ApiAdapter<T, ApiResult> extends PaginalAdapter<T> {
+public abstract class ApiAdapter<T, ApiResult> extends PaginalAdapter<T>
+        implements TaskListener.TaskFinishedListener<ApiResult>, TaskListener.TaskFailedListener<ApiResult> {
 
-    private AbstractApiTask<ApiResult> mApiTask;
+    @Override
+    public void onTaskFinished(ApiResult result) {
+        List<T> resultList = convertApiResultToData(result);
 
-    public ApiAdapter(AbstractApiTask<ApiResult> apiTask) {
-        mApiTask = apiTask;
+        switch (loadAction) {
+            case Refresh:
+                reloadData(true);
+                onRefreshFromServerFinished(result);
+                break;
 
-        mApiTask.addFinishedListener(new TaskListener.TaskFinishedListener<ApiResult>() {
-            @Override
-            public void onTaskFinished(ApiResult result) {
-                List<T> resultList = convertApiResultToData(result);
-                onProcessDataCompleted(resultList);
+            case FetchMore:
+                appendData(resultList);
+                checkHasMoreAfterFetchServerData(resultList);
+                break;
 
-                switch (loadAction) {
-                    case Refresh:
-                        reloadData(true);
-                        onRefreshFromServerFinished(result);
-                        break;
-
-                    case FetchMore:
-                        appendData(resultList);
-                        checkHasMoreAfterFetchServerData(resultList);
-                        break;
-
-                    default: // do nothing
-                }
-                stopLoadingView();
-                mLoading = false;
-            }
-        });
-
-        mApiTask.addFailedListener(new TaskListener.TaskFailedListener() {
-            @Override
-            public void onTaskFailed(Object o, TaskException ex) {
-                stopLoadingView();
-                onLoadFailed(ex.getMessage());
-                mLoading = false;
-            }
-        });
+            default: // do nothing
+        }
+        stopLoadingView(false);
+        mLoading = false;
     }
 
-    //*************************************************************************
-    // Task Delegate Method
-    //*************************************************************************
-
-    public void addArgument(String key, Object value) {
-        mApiTask.addArgument(key, value.toString());
-    }
-
-    public void addArgument(String key, int value) {
-        mApiTask.addArgument(key, Integer.toString(value));
-    }
-
-    public void addArgument(String key, boolean value) {
-        mApiTask.addArgument(key, Boolean.toString(value));
-    }
-
-    public void addArgument(String key, long value) {
-        mApiTask.addArgument(key, Long.toString(value));
-    }
-
-    public void addArgument(String key, float value) {
-        mApiTask.addArgument(key, Float.toString(value));
-    }
-
-    public void addArgument(String key, double value) {
-        mApiTask.addArgument(key, Double.toString(value));
-    }
-
-    public void addStartListener(TaskListener.TaskStartListener callback) {
-        mApiTask.addStartListener(callback);
-    }
-
-    public void addProgressUpdatedListener(TaskListener.TaskProgressUpdatedListener callback) {
-        mApiTask.addProgressUpdatedListener(callback);
-    }
-
-    public void addFinishedListener(TaskListener.TaskFinishedListener<ApiResult> callback) {
-        mApiTask.addFinishedListener(callback);
-    }
-
-    public void addCancelledListener(TaskListener.TaskCancelledListener<ApiResult> callback) {
-        mApiTask.addCancelledListener(callback);
-    }
-
-    public void addFailedListener(TaskListener.TaskFailedListener callback) {
-        mApiTask.addFailedListener(callback);
-    }
-
-    public void addDataChangedListener(TaskListener.TaskDataChangedListener callback) {
-        mApiTask.addDataChangedListener(callback);
-    }
-
-    public boolean isCancelled() {
-        return mApiTask.isCancelled();
+    @Override
+    public void onTaskFailed(ApiResult result, TaskException ex) {
+        stopLoadingView(false);
+        onLoadFailed(ex.getMessage());
+        mLoading = false;
     }
 
     //*************************************************************************
     // Abstract Method
     //*************************************************************************
 
-    protected abstract void setupRefreshParams(AbstractApiTask<ApiResult> apiTask);
+    protected abstract AbstractApiTask<ApiResult> createRefreshApiTask();
 
-    protected abstract void setupFetchMoreParams(AbstractApiTask<ApiResult> apiTask);
+    protected abstract AbstractApiTask<ApiResult> createFetchMoreApiTask();
 
     protected abstract List<T> convertApiResultToData(ApiResult result);
 
     protected void onRefreshFromServerFinished(ApiResult result) {}
-
-    protected void onProcessDataCompleted(List<T> resultList) {}
 
     //*************************************************************************
     // Internal Stuff
@@ -127,14 +59,18 @@ public abstract class ApiAdapter<T, ApiResult> extends PaginalAdapter<T> {
 
     @Override
     protected void refresh() {
-        setupRefreshParams(mApiTask);
-        TaskManager.runImmediately(mApiTask);
+        AbstractApiTask<ApiResult> apiTask = createRefreshApiTask();
+        apiTask.addFinishedListener(this);
+        apiTask.addFailedListener(this);
+        TaskManager.runImmediately(apiTask);
     }
 
     @Override
     protected void fetchMoreFromServer() {
-        setupFetchMoreParams(mApiTask);
-        TaskManager.runImmediately(mApiTask);
+        AbstractApiTask<ApiResult> apiTask = createFetchMoreApiTask();
+        apiTask.addFinishedListener(this);
+        apiTask.addFailedListener(this);
+        TaskManager.runImmediately(apiTask);
     }
 
 }

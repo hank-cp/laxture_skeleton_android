@@ -14,8 +14,8 @@ import java.util.List;
 
 public abstract class PaginalAdapter<T> extends BaseAdapter {
 
-    public static final int PAGE_ITEM_COUNT_FETCH_MORE = 20;
-    public static final int PAGE_ITEM_COUNT_REFRESH = 60;
+    public static final int PAGE_ITEM_COUNT_FETCH_MORE = 10;
+    public static final int PAGE_ITEM_COUNT_REFRESH = 30;
 
     protected List<T> mItems =
             Collections.synchronizedList(new ArrayList<T>());
@@ -28,13 +28,15 @@ public abstract class PaginalAdapter<T> extends BaseAdapter {
     // if false, try load from local and fetch refresh result
     // from server at the mean time. Should be reset to false
     // after refresh successfully
-    protected boolean mInitialized;
+    protected boolean mLoadStubData;
 
     private boolean mNoMoreFromServer;
 
-    private boolean mShowNoMoreToast = true;
-
     protected boolean mLoading;
+
+    public int paginalRows = PAGE_ITEM_COUNT_FETCH_MORE;
+
+    public int paginalRefreshRows = PAGE_ITEM_COUNT_REFRESH;
 
     //*************************************************************************
     // Adapter Method
@@ -74,16 +76,6 @@ public abstract class PaginalAdapter<T> extends BaseAdapter {
     }
 
     /**
-     * Indicate whether a Toast should be shown when no more
-     * data from server. Default is true
-     *
-     * @param value
-     */
-    public void setShowNoMoreToast(boolean value) {
-        mShowNoMoreToast = value;
-    }
-
-    /**
      * Insert data to head of Array in this adapter.
      *
      * @param fetchedData
@@ -119,7 +111,7 @@ public abstract class PaginalAdapter<T> extends BaseAdapter {
 
     protected abstract void setLoadingView(LoadAction action);
 
-    protected abstract void stopLoadingView();
+    protected abstract void stopLoadingView(boolean noMoreData);
 
     protected void preFetchMore() {}
 
@@ -142,24 +134,20 @@ public abstract class PaginalAdapter<T> extends BaseAdapter {
             mNoMoreFromServer = false;
         }
 
-        if (loadAction == LoadAction.FetchMore && getNoMoreFromServer()) {
-            // stop refreshing if list goes to end
-            if (mShowNoMoreToast) {
-                Toast.makeText(RuntimeContext.getApplication(),
-                        R.string.msg_no_more_data, Toast.LENGTH_SHORT).show();
-            }
-            stopLoadingView();
+        // if list goes to end, stop the loading view and return
+        if (loadAction == LoadAction.FetchMore && hasNoMoreFromServer()) {
+            stopLoadingView(true);
             return;
         }
 
         // if array is not initialized yet, try to load it from local
-        if (!mInitialized) {
+        if (!mLoadStubData) {
             // deliver cachedData to UI if it is just loaded from local.
             // then continue to refresh.
             LLog.d("deliver local data, and continue to refresh.");
             reloadData(false);
 
-            mInitialized = true;
+            mLoadStubData = true;
         }
 
         // array might be empty here for two cases:
@@ -190,8 +178,8 @@ public abstract class PaginalAdapter<T> extends BaseAdapter {
                 appendData(cachedData);
 
                 // reach end, no need to fetch server data
-                if (cachedData.size() == PAGE_ITEM_COUNT_FETCH_MORE) {
-                    stopLoadingView();
+                if (cachedData.size() == paginalRows) {
+                    stopLoadingView(false);
                     break;
                 }
             }
@@ -211,35 +199,32 @@ public abstract class PaginalAdapter<T> extends BaseAdapter {
     /**
      * reload data from local database.
      *
-     * @param fromServer
+     * @param afterRefreshFromServer
      */
-    public void reloadData(boolean fromServer) {
+    public void reloadData(boolean afterRefreshFromServer) {
         clear();
         List<T> cachedData = fetchMoreFromLocal(0);
         appendData(cachedData);
 
         // check if goes to the end of list
         // this step should be taken for refresh from server only.
-        if (fromServer) {
+        if (afterRefreshFromServer) {
             mNoMoreFromServer = loadAction == LoadAction.Refresh
-                    && cachedData.size() < PAGE_ITEM_COUNT_FETCH_MORE
-                    && getCount() == 0;
+                    && cachedData.size() < paginalRefreshRows;
         }
 
         onReloadDataCompleted();
-    };
+    }
 
     /**
      * check if there is more data from server that serve pulling
-     *
-     * @param fetchedData
      */
     public void checkHasMoreAfterFetchServerData(List<T> fetchedData) {
         mNoMoreFromServer = loadAction == LoadAction.FetchMore
                 && Checker.isEmpty(fetchedData);
     }
 
-    public boolean getNoMoreFromServer() {
+    public boolean hasNoMoreFromServer() {
         return mNoMoreFromServer;
     }
 }
