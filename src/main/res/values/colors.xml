@@ -7,4 +7,9 @@
     <color name="clickable_normal">#FFFFFF</color>
     <color name="clickable_pressed">#F2F2F2</color>
 
+    <!-- TabBar -->
+    <color name="tabMedium">#2B2B2B</color>
+    <color name="tabDark">#000000</color>
+    <color name="tabTransparent">#10ffffff</color>
+
 </resources>

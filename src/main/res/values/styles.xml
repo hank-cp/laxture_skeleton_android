@@ -9,6 +9,7 @@
         <!--<item name="android:checkboxStyle">@style/AppTheme.CheckBox</item>-->
         <!--<item name="android:radioButtonStyle">@style/AppTheme.RadioButton</item>-->
         <item name="android:textViewStyle">@style/AppTheme.TextView</item>
+        <item name="actionBarTheme">@style/AppTheme.ActionBar</item>
         <!--<item name="android:listViewStyle">@style/AppTheme.ListView</item>-->
     </style>
 
@@ -27,16 +28,21 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="AppTheme.ImageButton" parent="@android:style/Widget.ImageButton">
+        <!--<item name="android:background">@drawable/btn_default</item>-->
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    </style>
+
+    <!-- Alert Dialog Style -->
+
     <style name="CustomAlertDialogTheme.Button" parent="@style/AppTheme.Button">
         <!--<item name="android:background">@drawable/btn_dialog</item>-->
         <!--<item name="android:textColor">@color/btn_default</item>-->
         <!--<item name="positiveButtonBackground">@drawable/btn_dialog_positive</item>-->
         <item name="positiveButtonTextColor">@color/white</item>
         <item name="android:textSize">18dp</item>
-    </style>
-
-    <style name="AppTheme.ImageButton" parent="@android:style/Widget.ImageButton">
-        <!--<item name="android:background">@drawable/btn_default</item>-->
     </style>
 
     <!-- Custom Style -->
