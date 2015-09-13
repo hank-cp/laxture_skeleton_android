@@ -4,6 +4,7 @@ import android.os.Build;
 import android.widget.ArrayAdapter;
 
 import com.laxture.lib.RuntimeContext;
+import com.laxture.lib.task.AbstractTask;
 import com.laxture.lib.task.TaskListener;
 import com.laxture.lib.task.TaskManager;
 import com.laxture.skeleton.request.AbstractApiTask;
@@ -89,6 +90,10 @@ public abstract class SimpleApiAdapter<T, ApiResult> extends ArrayAdapter<T> {
 
     public boolean isCancelled() {
         return mApiTask.isCancelled();
+    }
+
+    public AbstractTask.State getState() {
+        return mApiTask.getState();
     }
 
     //*************************************************************************

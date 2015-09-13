@@ -191,6 +191,10 @@ public class FragmentNavigator {
         return true;
     }
 
+    public boolean isIntercepted() {
+        return mIntercepted;
+    }
+
     public interface FragmentNavigatorGetter {
         FragmentNavigator getFragmentNavigator();
     }
