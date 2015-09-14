@@ -126,6 +126,7 @@ public class FragmentNavigator {
 
         // pop current Fragment
         mBreadcrumbIndex--;
+        mFragmentStack.removeAt(mFragmentStack.size()-1);
 
         mController.onGoBack(mFragmentNames.get(mBreadcrumbIndex), mBreadcrumbIndex);
 
@@ -149,6 +150,11 @@ public class FragmentNavigator {
      */
     public void goBackToRoot() {
         if (mBreadcrumbIndex <= 0) return;
+
+        mBreadcrumbIndex = 0;
+        while (mFragmentStack.size() > 1) mFragmentStack.removeAt(1);
+
+        mController.onGoBack(mFragmentNames.get(mBreadcrumbIndex), mBreadcrumbIndex);
 
         mActivity.getSupportFragmentManager().popBackStackImmediate(
                 BACK_STACK_HOME, FragmentManager.POP_BACK_STACK_INCLUSIVE);
