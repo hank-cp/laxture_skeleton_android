@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
@@ -40,6 +41,8 @@ public class GsonUtil {
             .registerTypeAdapter(DateTime.class, new DateTimeTypeAdapter())
             .registerTypeAdapter(Boolean.class, new BooleanTypeAdapter())
             .registerTypeAdapter(boolean.class, new BooleanTypeAdapter()).create();
+
+    //***********************Serialization****************************
 
     /**
      * Util method for {@link Gson#toJson(Object, Type)}}
@@ -224,6 +227,30 @@ public class GsonUtil {
     }
 
     //*****************************Util Methods********************************
+
+    public static String optString(JsonObject json, String fieldName) {
+        if (json == null) return null;
+        JsonElement field = json.get(fieldName);
+        return field != null ? field.getAsString() : null;
+    }
+
+    public static int optInt(JsonObject json, String fieldName) {
+        if (json == null) return 0;
+        JsonElement field = json.get(fieldName);
+        return field != null ? field.getAsInt() : 0;
+    }
+
+    public static long optLong(JsonObject json, String fieldName) {
+        if (json == null) return 0;
+        JsonElement field = json.get(fieldName);
+        return field != null ? field.getAsLong() : 0;
+    }
+
+    public static double optDouble(JsonObject json, String fieldName) {
+        if (json == null) return 0;
+        JsonElement field = json.get(fieldName);
+        return field != null ? field.getAsDouble() : 0;
+    }
 
     /**
      * key:"value1,value2,value3"

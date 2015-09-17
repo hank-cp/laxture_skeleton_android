@@ -2,6 +2,10 @@ package com.laxture.skeleton.request;
 
 import android.widget.Toast;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.connectivity.http.HttpTaskConfig;
 import com.laxture.lib.connectivity.http.HttpTextTask;
@@ -11,11 +15,8 @@ import com.laxture.lib.util.DeviceUtil;
 import com.laxture.lib.util.LLog;
 import com.laxture.skeleton.Constants;
 import com.laxture.skeleton.R;
+import com.laxture.skeleton.util.GsonUtil;
 import com.laxture.skeleton.util.ServerTime;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +24,9 @@ import java.util.HashMap;
 
 public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
 
-    protected JSONObject resultJson;
-    protected JSONArray resultJsonArray;
+    private static JsonParser parser = new JsonParser();
+
+    protected JsonElement resultJson;
 
     public AbstractApiTask(String url) {
         super(url, defaultHttpTaskConfig);
@@ -42,21 +44,21 @@ public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
     protected void processResponse(InputStream inputStream) throws IOException {
         super.processResponse(inputStream);
 
-        JSONObject json = null;
+        JsonObject json = null;
         try {
             String str = getResponseText();
             LLog.d("Response :: %s", str);
-            json = new JSONObject(str);
-        } catch (JSONException e) {
+            json = (JsonObject) parser.parse(str);
+        } catch (JsonSyntaxException e) {
             LLog.w("JSON format error", e);
             setErrorDetails(new ApiException(ApiException.RESPONSE_DATA_FORMAT_ERROR,
-                    RuntimeContext.getString(R.string.msg_http_err_server_error)));
+                    RuntimeContext.getString(R.string.msg_http_err_server_error), e));
         }
 
         if (json != null) {
             // validate cgi code
-            int code = json.optInt("retCode");
-            String message = json.optString("msg");
+            int code = GsonUtil.optInt(json, "retCode");
+            String message = GsonUtil.optString(json, "msg");
             // server return error
             if (code != ApiException.SUCCESSFUL) {
                 TaskException e = new ApiException(code, message);
@@ -64,22 +66,17 @@ public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
             }
 
             // adjust server time
-            long ts = json.optLong("svrTime");
+            long ts = GsonUtil.optLong(json, "svrTime");
             ServerTime.setServerTime(ts);
         }
 
         if (json != null && getErrorDetails() == null) {
-            resultJson = json.optJSONObject("result");
-            resultJsonArray = json.optJSONArray("result");
+            resultJson = json.get("result");
         }
     }
 
-    public JSONObject getResultJson() {
+    public JsonElement getResultJson() {
         return resultJson;
-    }
-
-    public JSONArray getResultJsonArray() {
-        return resultJsonArray;
     }
 
     //*************************************************************************
@@ -88,7 +85,7 @@ public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
 
     public static HttpTaskConfig defaultHttpTaskConfig = new HttpTaskConfig();
     static {
-        defaultHttpTaskConfig.maxRetryCount = 1;
+        defaultHttpTaskConfig.maxRetryCount = 0;
         defaultHttpTaskConfig.headers = new HashMap<>();
         defaultHttpTaskConfig.headers.put("platform", Integer.toString(Constants.REQ_ARG_PLATFORM_ANDROID));
         defaultHttpTaskConfig.headers.put("appVersion", RuntimeContext.getVersionName());
