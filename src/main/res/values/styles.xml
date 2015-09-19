@@ -3,7 +3,6 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:alertDialogTheme">@style/CustomAlertDialogTheme</item>
         <item name="android:buttonStyle">@style/AppTheme.Button</item>
         <item name="android:imageButtonStyle">@style/AppTheme.ImageButton</item>
         <!--<item name="android:checkboxStyle">@style/AppTheme.CheckBox</item>-->
@@ -33,16 +32,6 @@
     </style>
 
     <style name="AppTheme.ActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-    </style>
-
-    <!-- Alert Dialog Style -->
-
-    <style name="CustomAlertDialogTheme.Button" parent="@style/AppTheme.Button">
-        <!--<item name="android:background">@drawable/btn_dialog</item>-->
-        <!--<item name="android:textColor">@color/btn_default</item>-->
-        <!--<item name="positiveButtonBackground">@drawable/btn_dialog_positive</item>-->
-        <item name="positiveButtonTextColor">@color/white</item>
-        <item name="android:textSize">18dp</item>
     </style>
 
     <!-- Custom Style -->
