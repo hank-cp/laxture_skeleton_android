@@ -39,10 +39,11 @@ public interface FragmentController {
      * </ul>
      *
      * @param name name of Fragment that is going to navigate to.
-     * @param fragment Fragment that is goting to navigate to.
+     * @param fragment Fragment that is going to navigate to.
+     * @param arguments Arguments bundles to fragment that is going to navigate to.
      * @return
      */
-    boolean onFragmentWillShow(String name, Fragment fragment);
+    boolean onFragmentWillShow(String name, Fragment fragment, Bundle arguments);
 
     /**
      * This callback will be fired at the end of

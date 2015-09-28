@@ -21,11 +21,11 @@ public class FragmentNavigator {
     private int mBreadcrumbIndex;
 
     private boolean mIntercepted;
-    private String mInterceptedFragmentName;
-    private Fragment mInterceptedFragment;
-    private Bundle mInterceptedArgument;
+    private String mIntercepteeFragmentName;
+    private Fragment mIntercepteeFragment;
+    private Bundle mIntercepteeArgument;
     private boolean mInterceptedIsBack;
-    private int mInterceptedTransition;
+    private int mIntercepteeTransition;
 
     public FragmentNavigator(FragmentController controller) {
         if (controller == null) {
@@ -66,15 +66,15 @@ public class FragmentNavigator {
         }
 
         int tempBreadcrumbIndex = mBreadcrumbIndex;
-        mIntercepted = mController.onFragmentWillShow(name, fragment);
+        mIntercepted = mController.onFragmentWillShow(name, fragment, argument);
         // Navigate to a new fragment during interception
         mIntercepted = mIntercepted && tempBreadcrumbIndex != mBreadcrumbIndex;
         if (mIntercepted) {
-            mInterceptedFragmentName = name;
-            mInterceptedFragment = fragment;
-            mInterceptedArgument = argument;
+            mIntercepteeFragmentName = name;
+            mIntercepteeFragment = fragment;
+            mIntercepteeArgument = argument;
             mInterceptedIsBack = back;
-            mInterceptedTransition = transition;
+            mIntercepteeTransition = transition;
             return;
         }
 
@@ -133,10 +133,10 @@ public class FragmentNavigator {
         // clear interception kept info
         if (mIntercepted) {
             mIntercepted = false;
-            mInterceptedFragmentName = null;
-            mInterceptedFragment = null;
-            mInterceptedArgument = null;
-            mInterceptedTransition = FragmentTransaction.TRANSIT_NONE;
+            mIntercepteeFragmentName = null;
+            mIntercepteeFragment = null;
+            mIntercepteeArgument = null;
+            mIntercepteeTransition = FragmentTransaction.TRANSIT_NONE;
         }
 
         mActivity.getSupportFragmentManager().popBackStackImmediate();
@@ -165,11 +165,23 @@ public class FragmentNavigator {
     }
 
     /**
-     * Continue to original forward Fragment from Interception Fragment.
+     * {@link #continueFromInterception(Bundle)}
      *
      * @return
      */
     public boolean continueFromInterception() {
+        return continueFromInterception(null);
+    }
+
+    /**
+     * Continue to original forward Fragment from Interception Fragment.
+     *
+     * @param argumentFromInterceptor argument return by interceptor that will be
+     *                                injected to interceptee.
+     *
+     * @return
+     */
+    public boolean continueFromInterception(Bundle argumentFromInterceptor) {
         if (!mIntercepted) return goBack();
 
         if (mBreadcrumbIndex > 0) {
@@ -179,20 +191,24 @@ public class FragmentNavigator {
             mActivity.getSupportFragmentManager().popBackStackImmediate();
         }
 
-        String interceptedFragmentName = mInterceptedFragmentName;
-        Fragment interceptedFragment = mInterceptedFragment;
-        Bundle interceptedArgument = mInterceptedArgument;
-        boolean interceptedIsBack = mInterceptedIsBack;
-        int interceptedTransition = mInterceptedTransition;
+        String intercepteeFragmentName = mIntercepteeFragmentName;
+        Fragment intercepteeFragment = mIntercepteeFragment;
+        Bundle intercepteeArgument = mIntercepteeArgument;
+        boolean intercepteeIsBack = mInterceptedIsBack;
+        int intercepteeTransition = mIntercepteeTransition;
 
         mIntercepted = false;
-        mInterceptedFragmentName = null;
-        mInterceptedFragment = null;
-        mInterceptedArgument = null;
-        mInterceptedTransition = FragmentTransaction.TRANSIT_NONE;
+        mIntercepteeFragmentName = null;
+        mIntercepteeFragment = null;
+        mIntercepteeArgument = null;
+        mIntercepteeTransition = FragmentTransaction.TRANSIT_NONE;
 
-        navigateTo(interceptedFragmentName, interceptedFragment,
-                interceptedArgument, interceptedIsBack, interceptedTransition);
+        if (argumentFromInterceptor != null) {
+            intercepteeArgument.putAll(argumentFromInterceptor);
+        }
+
+        navigateTo(intercepteeFragmentName, intercepteeFragment,
+                intercepteeArgument, intercepteeIsBack, intercepteeTransition);
 
         return true;
     }
