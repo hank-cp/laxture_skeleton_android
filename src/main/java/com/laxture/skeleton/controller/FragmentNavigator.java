@@ -81,7 +81,7 @@ public class FragmentNavigator {
         FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
         ft.setTransition(transition);
 
-        Fragment currentFragment = mFragmentStack.get(mBreadcrumbIndex);
+        Fragment currentFragment = getTopFragment();
 
         // set argument to Fragment, in case Fragment is reused.
         if (fragment.getArguments() == null) fragment.setArguments(new Bundle());
@@ -116,6 +116,10 @@ public class FragmentNavigator {
         mActivity.getSupportFragmentManager().executePendingTransactions();
 
         mController.onFragmentShown(name, fragment);
+    }
+
+    public Fragment getTopFragment() {
+        return mFragmentStack.get(mBreadcrumbIndex);
     }
 
     /**
