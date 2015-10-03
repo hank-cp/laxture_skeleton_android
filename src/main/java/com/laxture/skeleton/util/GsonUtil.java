@@ -12,7 +12,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.gson.reflect.TypeToken;
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.DateUtil;
 import com.laxture.lib.util.LLog;
@@ -28,7 +27,6 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.List;
 
 public class GsonUtil {
 
@@ -41,6 +39,8 @@ public class GsonUtil {
             .registerTypeAdapter(DateTime.class, new DateTimeTypeAdapter())
             .registerTypeAdapter(Boolean.class, new BooleanTypeAdapter())
             .registerTypeAdapter(boolean.class, new BooleanTypeAdapter()).create();
+
+    private static final DateTimeFormatter DTF = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     //***********************Serialization****************************
 
@@ -177,7 +177,7 @@ public class GsonUtil {
         @Override
         public JsonElement serialize(DateTime src, Type typeOfSrc,
                 JsonSerializationContext context) {
-            return new JsonPrimitive(src.getMillis() / 1000);
+            return new JsonPrimitive(DTF.print(src));
         }
 
         @Override
@@ -203,8 +203,7 @@ public class GsonUtil {
                     return new DateTime(str);
                 } catch (IllegalArgumentException e) {
                     LLog.d("Failed to resolve date by default format");
-                    DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:SS");
-                    return dtf.parseDateTime(str);
+                    return DTF.parseDateTime(str);
                 }
         }
     }
