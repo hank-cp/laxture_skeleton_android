@@ -45,23 +45,31 @@ public abstract class SimpleApiAdapter<T, ApiResult> extends ArrayAdapter<T> {
     }
 
     public void addArgument(String key, int value) {
-        mApiTask.addArgument(key, Integer.toString(value));
+        mApiTask.addArgument(key, value);
     }
 
     public void addArgument(String key, boolean value) {
-        mApiTask.addArgument(key, Boolean.toString(value));
+        mApiTask.addArgument(key, value);
     }
 
     public void addArgument(String key, long value) {
-        mApiTask.addArgument(key, Long.toString(value));
+        mApiTask.addArgument(key, value);
     }
 
     public void addArgument(String key, float value) {
-        mApiTask.addArgument(key, Float.toString(value));
+        mApiTask.addArgument(key, value);
     }
 
     public void addArgument(String key, double value) {
-        mApiTask.addArgument(key, Double.toString(value));
+        mApiTask.addArgument(key, value);
+    }
+
+    public void addArgument(String key, long[] value) {
+        mApiTask.addArgument(key, value);
+    }
+
+    public void addArgument(String key, String[] value) {
+        mApiTask.addArgument(key, value);
     }
 
     public void addStartListener(TaskListener.TaskStartListener callback) {
