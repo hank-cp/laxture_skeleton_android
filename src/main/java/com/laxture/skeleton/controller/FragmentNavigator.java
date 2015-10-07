@@ -65,10 +65,7 @@ public class FragmentNavigator {
             throw new UnHandledException("Fragment cannot be null");
         }
 
-        int tempBreadcrumbIndex = mBreadcrumbIndex;
         mIntercepted = mController.onFragmentWillShow(name, fragment, argument);
-        // Navigate to a new fragment during interception
-        mIntercepted = mIntercepted && tempBreadcrumbIndex != mBreadcrumbIndex;
         if (mIntercepted) {
             mIntercepteeFragmentName = name;
             mIntercepteeFragment = fragment;
@@ -222,6 +219,20 @@ public class FragmentNavigator {
                 intercepteeArgument, intercepteeIsBack, intercepteeTransition);
 
         return true;
+    }
+
+    /**
+     * Cancel Interception state. When Activity is luanched for interception,
+     * and result with cancel, call this method to clear interception state.
+     *
+     * @return
+     */
+    public void cancelInterceptionState() {
+        mIntercepted = false;
+        mIntercepteeFragmentName = null;
+        mIntercepteeFragment = null;
+        mIntercepteeArgument = null;
+        mIntercepteeTransition = FragmentTransaction.TRANSIT_NONE;
     }
 
     public boolean isIntercepted() {
