@@ -16,7 +16,7 @@ public class ServerTime {
         sLocalTimeOffset = serverTime - System.currentTimeMillis();
     }
 
-    public static DateTime currentDateTime() {
+    public static DateTime now() {
         return new DateTime(currentTimeMillis());
     }
 
