@@ -51,6 +51,8 @@ public abstract class ApiAdapter<T, ApiResult> extends PaginalAdapter<T>
 
     protected abstract List<T> convertApiResultToData(ApiResult result);
 
+    protected void onRefreshFromServerStart() {}
+
     protected void onRefreshFromServerFinished(ApiResult result) {}
 
     //*************************************************************************
@@ -62,6 +64,7 @@ public abstract class ApiAdapter<T, ApiResult> extends PaginalAdapter<T>
         AbstractApiTask<ApiResult> apiTask = createRefreshApiTask();
         apiTask.addFinishedListener(this);
         apiTask.addFailedListener(this);
+        onRefreshFromServerStart();
         TaskManager.runImmediately(apiTask);
     }
 
