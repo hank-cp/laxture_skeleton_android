@@ -25,15 +25,20 @@ public abstract class SimpleApiAdapter<T, ApiResult> extends ArrayAdapter<T> {
                 List<T> resultList = convertApiResultToData(result);
 
                 clear();
-                if (Build.VERSION.SDK_INT > 10) {
-                    addAll(resultList);
-                } else {
-                    for (T item : resultList) {
-                        add(item);
-                    }
-                }
+                resetAllData(resultList);
             }
         });
+    }
+
+    public void resetAllData(List<T> data) {
+        clear();
+        if (Build.VERSION.SDK_INT > 10) {
+            addAll(data);
+        } else {
+            for (T item : data) {
+                add(item);
+            }
+        }
     }
 
     //*************************************************************************
