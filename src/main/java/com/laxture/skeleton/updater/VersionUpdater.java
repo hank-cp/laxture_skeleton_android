@@ -14,7 +14,6 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
-import com.laxture.lib.PrefKeys;
 import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.task.TaskException;
 import com.laxture.lib.task.TaskListener;
@@ -22,6 +21,7 @@ import com.laxture.lib.task.TaskManager;
 import com.laxture.lib.util.IntentUtil;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.UnHandledException;
+import com.laxture.skeleton.PrefKeys;
 import com.laxture.skeleton.R;
 import com.laxture.skeleton.view.dialog.DialogController;
 import com.laxture.skeleton.view.dialog.DialogController.DialogActionHandler;
