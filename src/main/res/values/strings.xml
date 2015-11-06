@@ -3,4 +3,22 @@
 
     <string name="msg_no_more_data">没有更多数据</string>
 
+    <!-- 更新 -->
+    <string name="title_haveUpdate">有更新的版本</string>
+    <string name="title_download_done">下载更新完成</string>
+    <string name="title_download_failed">下载更新失败</string>
+    <string name="msg_haveUpdate">发现新版本%1$s，是否马上下载安装？\n%2$s</string>
+    <string name="msg_forceUpdate">当前版本过老，无法正常使用，请立即更新</string>
+    <string name="msg_download_done">点击马上开始安装%s最新版本</string>
+    <string name="msg_download_failed">下载更新失败，请稍候重试</string>
+    <string name="msg_check_update_failed">检查更新失败</string>
+    <string name="msg_install">下载更新完成，是否安装?</string>
+    <string name="label_later">稍后</string>
+    <string name="label_download">下载</string>
+    <string name="label_downloading">已下载 %s</string>
+    <string name="label_install">安装</string>
+    <string name="label_download_again">重新下载</string>
+    <string name="msg_checkingVersion">检查更新中…</string>
+    <string name="label_download_site">网页下载</string>
+
 </resources>
