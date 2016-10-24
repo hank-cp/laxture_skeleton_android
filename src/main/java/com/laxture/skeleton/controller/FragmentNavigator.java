@@ -1,6 +1,7 @@
 package com.laxture.skeleton.controller;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -63,6 +64,11 @@ public class FragmentNavigator {
     private void navigateTo(String name, Fragment fragment, Bundle argument, boolean back, int transition) {
         if (fragment == null) {
             throw new UnHandledException("Fragment cannot be null");
+        }
+
+        if (fragment instanceof DialogFragment) {
+            ((DialogFragment) fragment).show(mActivity.getSupportFragmentManager(), name);
+            return;
         }
 
         mIntercepted = mController.onFragmentWillShow(name, fragment, argument);

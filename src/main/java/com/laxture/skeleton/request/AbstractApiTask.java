@@ -15,8 +15,6 @@ import com.laxture.lib.util.DeviceUtil;
 import com.laxture.lib.util.LLog;
 import com.laxture.skeleton.Constants;
 import com.laxture.skeleton.R;
-import com.laxture.skeleton.util.GsonUtil;
-import com.laxture.skeleton.util.ServerTime;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +24,7 @@ public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
 
     private static JsonParser parser = new JsonParser();
 
-    protected JsonElement resultJson;
+    protected JsonObject resultJson;
 
     public AbstractApiTask(String url) {
         super(url, defaultHttpTaskConfig);
@@ -55,27 +53,10 @@ public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
                     RuntimeContext.getString(R.string.msg_http_err_server_error), e));
         }
 
-        if (json != null) {
-            // validate cgi code
-            int code = GsonUtil.optInt(json, "retCode");
-            String message = GsonUtil.optString(json, "msg");
-            // server return error
-            if (code != ApiException.SUCCESSFUL) {
-                TaskException e = new ApiException(code, message);
-                setErrorDetails(e);
-            }
-
-            // adjust server time
-            long ts = GsonUtil.optLong(json, "svrTime");
-            ServerTime.setServerTime(ts);
-        }
-
-        if (json != null && getErrorDetails() == null) {
-            resultJson = json.get("result");
-        }
+        if (json != null) resultJson = json;
     }
 
-    public JsonElement getResultJson() {
+    public JsonObject getResultJson() {
         return resultJson;
     }
 
