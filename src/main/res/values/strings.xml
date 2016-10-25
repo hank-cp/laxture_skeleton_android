@@ -20,5 +20,6 @@
     <string name="label_download_again">重新下载</string>
     <string name="msg_checkingVersion">检查更新中…</string>
     <string name="label_download_site">网页下载</string>
+    <string name="msg_no_data">没有数据</string>
 
 </resources>

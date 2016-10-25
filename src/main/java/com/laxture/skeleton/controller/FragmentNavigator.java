@@ -66,11 +66,6 @@ public class FragmentNavigator {
             throw new UnHandledException("Fragment cannot be null");
         }
 
-        if (fragment instanceof DialogFragment) {
-            ((DialogFragment) fragment).show(mActivity.getSupportFragmentManager(), name);
-            return;
-        }
-
         mIntercepted = mController.onFragmentWillShow(name, fragment, argument);
         if (mIntercepted) {
             mIntercepteeFragmentName = name;
@@ -111,6 +106,12 @@ public class FragmentNavigator {
         mFragmentStack.append(mBreadcrumbIndex, fragment);
         mFragmentNames.append(mBreadcrumbIndex, name);
 
+        // show DialogFragment if it is
+        if (fragment instanceof DialogFragment) {
+            ((DialogFragment) fragment).show(mActivity.getSupportFragmentManager(), name);
+            return;
+        }
+
         // push new Fragment
         if (mActivity.getSupportFragmentManager().findFragmentByTag(name) == null)
             ft.add(android.R.id.tabcontent, fragment, name);
@@ -138,6 +139,7 @@ public class FragmentNavigator {
     public boolean goBack() {
         if (mBreadcrumbIndex <= 0) return false;
 
+        Fragment currentFragment = mFragmentStack.get(mBreadcrumbIndex);
         // pop current Fragment
         mBreadcrumbIndex--;
         mFragmentStack.removeAt(mFragmentStack.size()-1);
@@ -153,7 +155,11 @@ public class FragmentNavigator {
             mIntercepteeTransition = FragmentTransaction.TRANSIT_NONE;
         }
 
-        mActivity.getSupportFragmentManager().popBackStackImmediate();
+        if (currentFragment instanceof DialogFragment) {
+            ((DialogFragment) currentFragment).dismiss();
+        } else {
+            mActivity.getSupportFragmentManager().popBackStackImmediate();
+        }
         return true;
     }
 
@@ -199,10 +205,15 @@ public class FragmentNavigator {
         if (!mIntercepted) return goBack();
 
         if (mBreadcrumbIndex > 0) {
+            Fragment currentFragment = mFragmentStack.get(mBreadcrumbIndex);
             // pop current Fragment
             mBreadcrumbIndex--;
             mController.onGoBack(mFragmentNames.get(mBreadcrumbIndex), mBreadcrumbIndex);
-            mActivity.getSupportFragmentManager().popBackStackImmediate();
+            if (currentFragment instanceof DialogFragment) {
+                ((DialogFragment) currentFragment).dismiss();
+            } else {
+                mActivity.getSupportFragmentManager().popBackStackImmediate();
+            }
         }
 
         String intercepteeFragmentName = mIntercepteeFragmentName;
@@ -228,7 +239,7 @@ public class FragmentNavigator {
     }
 
     /**
-     * Cancel Interception state. When Activity is luanched for interception,
+     * Cancel Interception state. When Activity is launched for interception,
      * and result with cancel, call this method to clear interception state.
      *
      * @return
