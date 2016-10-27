@@ -13,7 +13,6 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.laxture.lib.util.Checker;
-import com.laxture.lib.util.DateUtil;
 import com.laxture.lib.util.LLog;
 
 import org.joda.time.DateTime;
@@ -26,7 +25,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.Date;
 
 public class GsonUtil {
 
@@ -35,7 +33,6 @@ public class GsonUtil {
             .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.PRIVATE)
             // skip fields annotated with @SkipJson
             .setExclusionStrategies(new SkipFieldExclusionStrategy())
-            .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .registerTypeAdapter(DateTime.class, new DateTimeTypeAdapter())
             .registerTypeAdapter(Boolean.class, new BooleanTypeAdapter())
             .registerTypeAdapter(boolean.class, new BooleanTypeAdapter()).create();
@@ -136,38 +133,6 @@ public class GsonUtil {
             if (json.getAsInt() == 1) return true;
             if (json.getAsInt() == 0) return false;
             return json.getAsBoolean();
-        }
-    }
-
-    private static final class DateTypeAdapter implements JsonSerializer<Date>,
-                                                          JsonDeserializer<Date> {
-
-        @Override
-        public JsonElement serialize(Date src, Type typeOfSrc,
-                JsonSerializationContext context) {
-            return new JsonPrimitive(src.getTime()/1000);
-        }
-
-        @Override
-        public Date deserialize(JsonElement json, Type typeOfT,
-                JsonDeserializationContext context) throws JsonParseException {
-            if (!(json instanceof JsonPrimitive)) {
-                throw new JsonParseException(
-                        "The date should be a string value");
-            }
-
-            String str = json.getAsString();
-            if (Checker.isEmpty(str)) return null;
-            Long dateLong = null;
-            try {
-                // in case timestamp is submitted by iOS
-                dateLong = (str.indexOf(".") > 0)
-                        ? Long.parseLong(str.substring(0, str.indexOf(".")))
-                        : json.getAsLong();
-            } catch (NumberFormatException ignored) {}
-
-            if (dateLong != null) return new Date(dateLong * 1000);
-            else return DateUtil.parseDate(str, "yyyy-MM-dd HH:mm:SS");
         }
     }
 
