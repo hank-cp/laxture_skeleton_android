@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/shadow_2"/>
+            <padding
+                android:left="0dip"
+                android:top="1dip"
+                android:right="0dip"
+                android:bottom="2dip" />
+        </shape>
+    </item>
+
+    <item>
+        <shape>
+            <solid android:color="@color/shadow"/>
+            <padding
+                android:left="0dip"
+                android:top="0dip"
+                android:right="0dip"
+                android:bottom="2dip" />
+        </shape>
+    </item>
+
+    <item>
+        <shape>
+            <solid android:color="@color/shadow"/>
+            <padding
+                android:left="0dip"
+                android:top="0dip"
+                android:right="0dip"
+                android:bottom="1dip" />
+        </shape>
+    </item>
+
+    <item>
+        <shape>
+            <solid android:color="@color/clickable_pressed" />
+        </shape>
+    </item>
+
+</layer-list>
