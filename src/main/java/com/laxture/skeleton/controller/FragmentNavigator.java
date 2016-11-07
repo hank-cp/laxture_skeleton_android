@@ -92,7 +92,6 @@ public class FragmentNavigator {
         if (currentFragment != null) {
             if (back) {
                 // Add to back stack
-                currentFragment.setTargetFragment(fragment, REQUEST_CODE_NAVIGATOR);
                 ft.addToBackStack(mBreadcrumbIndex == 0 ? BACK_STACK_HOME : null);
                 mBreadcrumbIndex++;
             } else {
