@@ -4,6 +4,7 @@ import android.widget.BaseAdapter;
 import android.widget.Toast;
 
 import com.laxture.lib.RuntimeContext;
+import com.laxture.lib.java8.Predicate;
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.LLog;
 import com.laxture.skeleton.R;
@@ -60,6 +61,17 @@ public abstract class PaginalAdapter<T> extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void removeIf(Predicate<T> predicate) {
+        T matchedItem = null;
+        for (T item : mItems) {
+            if (predicate.test(item)) {
+                matchedItem = item;
+                break;
+            }
+        }
+        if (matchedItem != null) remove(matchedItem);
+    }
+
     public void add(T item) {
         mItems.add(item);
         notifyDataSetChanged();
@@ -106,8 +118,6 @@ public abstract class PaginalAdapter<T> extends BaseAdapter {
     protected abstract void fetchMoreFromServer();
 
     protected abstract void refresh();
-
-    public abstract void onLoadFailed(String errorMessage);
 
     protected abstract void setLoadingView(LoadAction action);
 

@@ -1,5 +1,7 @@
 package com.laxture.skeleton.controller;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -13,6 +15,7 @@ import com.laxture.lib.util.UnHandledException;
 public class FragmentNavigator {
 
     public static final String BACK_STACK_HOME = "back_stack_home";
+    public static final int REQUEST_CODE_NAVIGATOR = Integer.MAX_VALUE / 2 + 13; // random magic code
 
     private FragmentActivity mActivity;
     private FragmentController mController;
@@ -89,6 +92,7 @@ public class FragmentNavigator {
         if (currentFragment != null) {
             if (back) {
                 // Add to back stack
+                currentFragment.setTargetFragment(fragment, REQUEST_CODE_NAVIGATOR);
                 ft.addToBackStack(mBreadcrumbIndex == 0 ? BACK_STACK_HOME : null);
                 mBreadcrumbIndex++;
             } else {
@@ -137,6 +141,23 @@ public class FragmentNavigator {
      * Go back from current to last Fragment if there is any.
      */
     public boolean goBack() {
+        return goBack(null);
+    }
+
+    /**
+     * Go back from current to last Fragment if there is any. Allow passing arguments
+     *
+     * <pre>
+         public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (requestCode == REQUEST_CODE_NAVIGATOR && resultCode == Activity.RESULT_OK
+                && data != null) {
+                // do something here...
+            }
+         }
+     * </pre>
+     *
+     */
+    public boolean goBack(Bundle backArgs) {
         if (mBreadcrumbIndex <= 0) return false;
 
         Fragment currentFragment = mFragmentStack.get(mBreadcrumbIndex);
@@ -159,6 +180,12 @@ public class FragmentNavigator {
             ((DialogFragment) currentFragment).dismiss();
         } else {
             mActivity.getSupportFragmentManager().popBackStackImmediate();
+            if (backArgs != null) {
+                Intent intent = new Intent();
+                intent.putExtras(backArgs);
+                getTopFragment().onActivityResult(
+                        REQUEST_CODE_NAVIGATOR, Activity.RESULT_OK, intent);
+            }
         }
         return true;
     }
