@@ -100,6 +100,7 @@ public class VersionUpdater {
     }
 
     public void bindToActivity(Activity activity) {
+        mActvity = activity;
         mDialogController = new ApkUpdaterDialogController(activity);
 
         if (mPendingDialogTag != null) {
@@ -163,9 +164,9 @@ public class VersionUpdater {
                 }
             }
         });
-        mCheckUpdateTask.addFailedListener(new TaskListener.TaskFailedListener() {
+        mCheckUpdateTask.addFailedListener(new TaskListener.TaskFailedListener<VersionInfo>() {
             @Override
-            public void onTaskFailed(Object o, TaskException ex) {
+            public void onTaskFailed(VersionInfo versionInfo, TaskException ex) {
                 LLog.e("Check update APK version failed.");
                 resetCheckUpdate();
                 if (mCheckUpdateListener != null)
@@ -280,9 +281,9 @@ public class VersionUpdater {
                 mDialogController.showDialog(DIALOG_INSTALL);
             }
         });
-        mApkDownloadTask.addFailedListener(new TaskListener.TaskFailedListener() {
+        mApkDownloadTask.addFailedListener(new TaskListener.TaskFailedListener<File>() {
             @Override
-            public void onTaskFailed(Object o, TaskException ex) {
+            public void onTaskFailed(File file, TaskException ex) {
                 LLog.e("Download latest version of APK from failed.");
 
                 // cancel downloading notification
