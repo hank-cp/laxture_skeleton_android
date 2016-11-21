@@ -1,5 +1,6 @@
 package com.laxture.skeleton.updater;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Notification;
@@ -218,7 +219,8 @@ public class VersionUpdater {
     /**
      * Call this method when Application start.
      */
-    public static void postVersionUpdated() {
+    @SuppressLint("CommitPrefEdits")
+    public static void postVersionUpdated(AppVersionUpdatedListener listener) {
         SharedPreferences pref = RuntimeContext.getSharedPreferences();
         String currentVersion = RuntimeContext.getVersionName();
         String installedVersion = pref.getString(PrefKeys.PREF_KEY_INSTALLED_VERSION, null);
@@ -229,9 +231,14 @@ public class VersionUpdater {
             editor.remove(PrefKeys.PREF_KEY_UPDATE_BUILD_NUM);
             editor.remove(PrefKeys.PREF_KEY_UPDATE_URL);
             editor.remove(PrefKeys.PREF_KEY_UPDATE_FORCE);
+            if (listener != null) listener.onVersionUpdated(installedVersion, currentVersion);
         }
         editor.putString(PrefKeys.PREF_KEY_INSTALLED_VERSION, currentVersion);
         editor.commit();
+    }
+
+    public interface AppVersionUpdatedListener {
+        void onVersionUpdated(String oldVersionName, String newVersionName);
     }
 
     //*************************************************************************
