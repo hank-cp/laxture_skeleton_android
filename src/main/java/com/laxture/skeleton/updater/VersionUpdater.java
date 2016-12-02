@@ -37,7 +37,10 @@ public class VersionUpdater {
         public String mainVersion;
         public int buildNum;
         public String url;
+        @Deprecated
         public boolean force;
+        // all version code under this version should be force updated
+        public int forceUpdateUnderBuildNum;
         public String[] features;
 
         // this field is not from JSON, but used to keep the version
@@ -140,7 +143,7 @@ public class VersionUpdater {
             public void onTaskFinished(VersionInfo result) {
                 mVersionInfo = result;
 
-                LLog.d("Receive latest version %s from server. force=%s", result.getVersionName(), result.force);
+                LLog.d("Receive latest version %s from server. force=%s", result.getVersionName(), result.forceUpdateUnderBuildNum);
 
                 // has update
                 if (result.buildNum > RuntimeContext.getVersionCode()) {
@@ -148,7 +151,7 @@ public class VersionUpdater {
                     editor.putString(PrefKeys.PREF_KEY_UPDATE_MAIN_VERSION, mVersionInfo.mainVersion);
                     editor.putInt(PrefKeys.PREF_KEY_UPDATE_BUILD_NUM, mVersionInfo.buildNum);
                     editor.putString(PrefKeys.PREF_KEY_UPDATE_URL, mVersionInfo.url);
-                    editor.putBoolean(PrefKeys.PREF_KEY_UPDATE_FORCE, result.force);
+                    editor.putBoolean(PrefKeys.PREF_KEY_UPDATE_FORCE, RuntimeContext.getVersionCode() < result.forceUpdateUnderBuildNum);
                     editor.commit();
                     resetCheckUpdate();
                     mDialogController.showDialog(DIALOG_DOWNLOAD, result);
@@ -360,7 +363,7 @@ public class VersionUpdater {
         public Dialog prepareDialog(String dialogTag, Object... params) {
             if (DIALOG_DOWNLOAD.equals(dialogTag)) {
                 VersionInfo versionInfo = (VersionInfo) params[0];
-                String updateMsg = !versionInfo.force
+                String updateMsg = RuntimeContext.getVersionCode() < versionInfo.forceUpdateUnderBuildNum
                         ? RuntimeContext.getString(R.string.msg_haveUpdate,
                         versionInfo.getVersionName(), versionInfo.getFeaturesWords())
                         : RuntimeContext.getString(R.string.msg_forceUpdate);
@@ -411,7 +414,8 @@ public class VersionUpdater {
         public void onNo(DialogInterface dialog) {
             SharedPreferences pref = RuntimeContext.getSharedPreferences();
             Editor editor = pref.edit();
-            editor.putLong(PrefKeys.PREF_KEY_NEXT_UPDATE_DATE, mVersionInfo.force ? 0 : getNextCheckUpdateTime().getMillis());
+            editor.putLong(PrefKeys.PREF_KEY_NEXT_UPDATE_DATE, RuntimeContext.getVersionCode() < mVersionInfo.forceUpdateUnderBuildNum
+                    ? 0 : getNextCheckUpdateTime().getMillis());
             editor.commit();
             release();
         }
