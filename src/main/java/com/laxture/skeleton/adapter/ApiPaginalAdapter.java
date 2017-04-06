@@ -10,8 +10,15 @@ import com.laxture.skeleton.request.AbstractApiTask;
 import java.util.List;
 
 @SuppressLint("ViewConstructor")
-public abstract class ApiPaginalAdapter<T, ApiResult> extends PaginalAdapter<T>
-        implements TaskListener.TaskFinishedListener<ApiResult>, TaskListener.TaskFailedListener<ApiResult> {
+public abstract class ApiPaginalAdapter<T, ApiResult> extends PaginalAdapter<T> implements
+        TaskListener.TaskStartListener,
+        TaskListener.TaskFinishedListener<ApiResult>,
+        TaskListener.TaskFailedListener<ApiResult> {
+
+    @Override
+    public void onTaskStart() {
+        setLoadingView(LoadAction.Refresh);
+    }
 
     @Override
     public void onTaskFinished(ApiResult result) {
@@ -64,6 +71,7 @@ public abstract class ApiPaginalAdapter<T, ApiResult> extends PaginalAdapter<T>
     @Override
     protected void refresh() {
         AbstractApiTask<ApiResult> apiTask = createRefreshApiTask();
+        apiTask.addStartListener(this);
         apiTask.addFinishedListener(this);
         apiTask.addFailedListener(this);
         onRefreshFromServerStart();
@@ -73,6 +81,7 @@ public abstract class ApiPaginalAdapter<T, ApiResult> extends PaginalAdapter<T>
     @Override
     protected void fetchMoreFromServer() {
         AbstractApiTask<ApiResult> apiTask = createFetchMoreApiTask();
+        apiTask.addStartListener(this);
         apiTask.addFinishedListener(this);
         apiTask.addFailedListener(this);
         TaskManager.runImmediately(apiTask);
