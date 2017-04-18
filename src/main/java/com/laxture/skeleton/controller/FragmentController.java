@@ -10,6 +10,12 @@ import android.support.v4.app.FragmentActivity;
  */
 public interface FragmentController {
 
+    enum InterceptionResult {
+        Insert,
+        Interrupted,
+        Through
+    }
+
     /**
      * We use this method to tell FragmentManager where to find needed {@link FragmentActivity}
      *
@@ -43,7 +49,7 @@ public interface FragmentController {
      * @param arguments Arguments bundles to fragment that is going to navigate to.
      * @return
      */
-    boolean onFragmentWillShow(String name, Fragment fragment, Bundle arguments);
+    InterceptionResult onFragmentWillShow(String name, Fragment fragment, Bundle arguments);
 
     /**
      * This callback will be fired at the end of

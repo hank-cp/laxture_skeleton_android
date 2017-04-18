@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.SparseArray;
 
 import com.laxture.lib.util.UnHandledException;
+import com.laxture.skeleton.controller.FragmentController.InterceptionResult;
 
 public class FragmentNavigator {
 
@@ -58,25 +59,26 @@ public class FragmentNavigator {
 
     /**
      * Navigate to next Fragment.
-     *
-     * @param name
-     * @param argument
-     * @param back
-     * @param transition
      */
     private void navigateTo(String name, Fragment fragment, Bundle argument, boolean back, int transition) {
         if (fragment == null) {
             throw new UnHandledException("Fragment cannot be null");
         }
 
-        mIntercepted = mController.onFragmentWillShow(name, fragment, argument);
-        if (mIntercepted) {
-            mIntercepteeFragmentName = name;
-            mIntercepteeFragment = fragment;
-            mIntercepteeArgument = argument;
-            mInterceptedIsBack = back;
-            mIntercepteeTransition = transition;
-            return;
+        InterceptionResult interceptionResult = mController.onFragmentWillShow(name, fragment, argument);
+        switch (interceptionResult) {
+            case Insert: {
+                mIntercepted = true;
+                mIntercepteeFragmentName = name;
+                mIntercepteeFragment = fragment;
+                mIntercepteeArgument = argument;
+                mInterceptedIsBack = back;
+                mIntercepteeTransition = transition;
+                return;
+            }
+            case Interrupted: {
+                return;
+            }
         }
 
         FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
