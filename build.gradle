@@ -40,4 +40,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile "com.android.support:design:$android_supportVersion"
     compile "com.android.support:appcompat-v7:$android_supportVersion"
+    compile "com.android.support:preference-v7:$android_supportVersion"
 }

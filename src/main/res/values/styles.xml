@@ -10,6 +10,7 @@
         <item name="android:textViewStyle">@style/AppTheme.TextView</item>
         <item name="actionBarTheme">@style/AppTheme.ActionBar</item>
         <!--<item name="android:listViewStyle">@style/AppTheme.ListView</item>-->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <!-- Common Widget Style -->
