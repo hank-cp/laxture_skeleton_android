@@ -2,13 +2,13 @@ package com.laxture.skeleton.request;
 
 import android.widget.Toast;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.connectivity.http.HttpTaskConfig;
 import com.laxture.lib.connectivity.http.HttpTextTask;
+import com.laxture.lib.java8.Optional;
 import com.laxture.lib.task.TaskException;
 import com.laxture.lib.task.TaskListener;
 import com.laxture.lib.util.DeviceUtil;
@@ -25,6 +25,16 @@ public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
     private static JsonParser parser = new JsonParser();
 
     protected JsonObject resultJson;
+
+    private Long mTotal;
+
+    public Long getTotal() {
+        return Optional.ofNullable(mTotal).orElse(0L);
+    }
+
+    public void setTotal(Long total) {
+        this.mTotal = total;
+    }
 
     public AbstractApiTask(String url) {
         super(url, defaultHttpTaskConfig);

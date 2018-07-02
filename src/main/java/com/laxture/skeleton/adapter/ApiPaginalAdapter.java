@@ -2,6 +2,7 @@ package com.laxture.skeleton.adapter;
 
 import android.annotation.SuppressLint;
 
+import com.laxture.lib.java8.Consumer;
 import com.laxture.lib.task.TaskException;
 import com.laxture.lib.task.TaskListener;
 import com.laxture.lib.task.TaskManager;
@@ -14,6 +15,8 @@ public abstract class ApiPaginalAdapter<T, ApiResult> extends PaginalAdapter<T> 
         TaskListener.TaskStartListener,
         TaskListener.TaskFinishedListener<ApiResult>,
         TaskListener.TaskFailedListener<ApiResult> {
+
+    private Consumer<Long> mTotalConsumer;
 
     @Override
     public void onTaskStart() {
@@ -64,15 +67,27 @@ public abstract class ApiPaginalAdapter<T, ApiResult> extends PaginalAdapter<T> 
 
     protected void onRefreshFromServerFinished(ApiResult result) {}
 
+    public void setTotalConsumer(Consumer<Long> totalConsumer) {
+        this.mTotalConsumer = totalConsumer;
+    }
+
     //*************************************************************************
     // Internal Stuff
     //*************************************************************************
 
     @Override
     protected void refresh() {
-        AbstractApiTask<ApiResult> apiTask = createRefreshApiTask();
+        final AbstractApiTask<ApiResult> apiTask = createRefreshApiTask();
         apiTask.addStartListener(this);
         apiTask.addFinishedListener(this);
+        if (mTotalConsumer != null) {
+            apiTask.addFinishedListener(new TaskListener.TaskFinishedListener<ApiResult>() {
+                @Override
+                public void onTaskFinished(ApiResult apiResult) {
+                    mTotalConsumer.consume(apiTask.getTotal());
+                }
+            });
+        }
         apiTask.addFailedListener(this);
         onRefreshFromServerStart();
         TaskManager.runImmediately(apiTask);
@@ -80,9 +95,17 @@ public abstract class ApiPaginalAdapter<T, ApiResult> extends PaginalAdapter<T> 
 
     @Override
     protected void fetchMoreFromServer() {
-        AbstractApiTask<ApiResult> apiTask = createFetchMoreApiTask();
+        final AbstractApiTask<ApiResult> apiTask = createFetchMoreApiTask();
         apiTask.addStartListener(this);
         apiTask.addFinishedListener(this);
+        if (mTotalConsumer != null) {
+            apiTask.addFinishedListener(new TaskListener.TaskFinishedListener<ApiResult>() {
+                @Override
+                public void onTaskFinished(ApiResult apiResult) {
+                    mTotalConsumer.consume(apiTask.getTotal());
+                }
+            });
+        }
         apiTask.addFailedListener(this);
         TaskManager.runImmediately(apiTask);
     }
