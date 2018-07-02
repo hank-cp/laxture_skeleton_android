@@ -88,7 +88,7 @@ public class VersionUpdater {
     private Activity mActvity;
     private ApkUpdaterDialogController mDialogController;
     private NotificationManager mNotificationManager;
-    private Notification mDownloadNotification;
+    private NotificationCompat.Builder mDownloadNotificationBuilder;
     private CheckUpdateListener mCheckUpdateListener;
 
     //*************************************************************************
@@ -255,11 +255,9 @@ public class VersionUpdater {
         mApkDownloadTask.addProgressUpdatedListener(new TaskListener.TaskProgressUpdatedListener() {
             @Override
             public void onTaskProgressUpdated(int totalSize, int currentSize) {
-                if (mDownloadNotification == null) return;
                 if (currentSize - mPreviousProgress > totalSize*0.02) {
-                    mDownloadNotification.contentView.setProgressBar(
-                            android.R.id.progress, totalSize, currentSize, false);
-                    mNotificationManager.notify(R.id.notification_downloading, mDownloadNotification);
+                    mDownloadNotificationBuilder.setProgress(totalSize, currentSize, false);
+                    mNotificationManager.notify(R.id.notification_downloading, mDownloadNotificationBuilder.build());
                     mPreviousProgress = currentSize;
                 }
             }
@@ -322,25 +320,15 @@ public class VersionUpdater {
             }
         });
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(RuntimeContext.getApplication());
-        builder.setSmallIcon(android.R.drawable.stat_sys_download);
-        builder.setContentTitle(mApkDownloadTask.getDownloadFile().getName());
-        builder.setContentIntent(PendingIntent.getActivity(RuntimeContext.getApplication(), 0, new Intent(), 0));
-        builder.setProgress(0, 0, true);
-        builder.setWhen(0);
-        builder.setOngoing(true);
-        mDownloadNotification = builder.build();
-        if (Build.VERSION.SDK_INT < 13) {
-            RemoteViews contentViews = new RemoteViews(
-                    RuntimeContext.getPackageName(), R.layout.notification_progress);
-            contentViews.setTextViewText(android.R.id.title,
-                    mApkDownloadTask.getDownloadFile().getName());
-            mDownloadNotification.contentView = contentViews;
-            mDownloadNotification.when = 0;
-            mDownloadNotification.flags = Notification.FLAG_ONGOING_EVENT;
-        }
+        mDownloadNotificationBuilder = new NotificationCompat.Builder(RuntimeContext.getApplication());
+        mDownloadNotificationBuilder.setSmallIcon(android.R.drawable.stat_sys_download);
+        mDownloadNotificationBuilder.setContentTitle(mApkDownloadTask.getDownloadFile().getName());
+        mDownloadNotificationBuilder.setContentIntent(PendingIntent.getActivity(RuntimeContext.getApplication(), 0, new Intent(), 0));
+        mDownloadNotificationBuilder.setProgress(100, 0, false);
+        mDownloadNotificationBuilder.setWhen(0);
+        mDownloadNotificationBuilder.setOngoing(true);
 
-        mNotificationManager.notify(R.id.notification_downloading, mDownloadNotification);
+        mNotificationManager.notify(R.id.notification_downloading, mDownloadNotificationBuilder.build());
 
         TaskManager.runImmediately(mApkDownloadTask);
     }
