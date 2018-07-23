@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.SparseArray;
 
 import com.laxture.lib.util.UnHandledException;
+import com.laxture.skeleton.Constants;
 import com.laxture.skeleton.controller.FragmentController.InterceptionResult;
 
 public class FragmentNavigator {
@@ -162,6 +163,7 @@ public class FragmentNavigator {
         if (mBreadcrumbIndex <= 0) return false;
 
         Fragment currentFragment = mFragmentStack.get(mBreadcrumbIndex);
+        String currentFragmentName = mFragmentNames.get(mBreadcrumbIndex);
         // pop current Fragment
         mBreadcrumbIndex--;
         mFragmentStack.removeAt(mFragmentStack.size()-1);
@@ -184,6 +186,7 @@ public class FragmentNavigator {
             if (backArgs != null) {
                 Intent intent = new Intent();
                 intent.putExtras(backArgs);
+                intent.putExtra(Constants.ARGUMENT_BACK_FROM_FRAGMENT, currentFragmentName);
                 getTopFragment().onActivityResult(
                         REQUEST_CODE_NAVIGATOR, Activity.RESULT_OK, intent);
             }
