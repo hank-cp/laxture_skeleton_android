@@ -4,6 +4,7 @@ import android.os.Build;
 import android.widget.ArrayAdapter;
 
 import com.laxture.lib.RuntimeContext;
+import com.laxture.lib.java8.Consumer;
 import com.laxture.lib.task.TaskException;
 import com.laxture.lib.task.TaskListener;
 import com.laxture.lib.task.TaskManager;
@@ -14,6 +15,8 @@ import java.util.List;
 public abstract class ApiAdapter<T, ApiResult> extends ArrayAdapter<T>
         implements TaskListener.TaskFinishedListener<ApiResult>,
                    TaskListener.TaskFailedListener<ApiResult> {
+
+    private Consumer<Long> mTotalConsumer;
 
     public ApiAdapter() {
         super(RuntimeContext.getApplication(), 0);
@@ -45,9 +48,21 @@ public abstract class ApiAdapter<T, ApiResult> extends ArrayAdapter<T>
     // Public Method
     //*************************************************************************
 
+    public void setTotalConsumer(Consumer<Long> totalConsumer) {
+        this.mTotalConsumer = totalConsumer;
+    }
+
     public void loadData() {
-        AbstractApiTask<ApiResult> apiTask = createApiTask();
+        final AbstractApiTask<ApiResult> apiTask = createApiTask();
         apiTask.addFinishedListener(this);
+        if (mTotalConsumer != null) {
+            apiTask.addFinishedListener(new TaskListener.TaskFinishedListener<ApiResult>() {
+                @Override
+                public void onTaskFinished(ApiResult apiResult) {
+                    mTotalConsumer.consume(apiTask.getTotal());
+                }
+            });
+        }
         TaskManager.runImmediately(apiTask);
     }
 
