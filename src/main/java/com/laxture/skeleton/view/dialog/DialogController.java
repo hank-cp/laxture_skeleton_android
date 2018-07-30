@@ -6,10 +6,13 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.laxture.lib.util.Checker;
 import com.laxture.lib.util.LLog;
 import com.laxture.lib.util.UnHandledException;
+import com.laxture.lib.util.ViewUtil;
+import com.laxture.skeleton.util.SkeletonUtil;
 
 import java.util.HashMap;
 
@@ -120,6 +123,7 @@ public abstract class DialogController {
     private AlertDialog mAlertDialog;
     private AlertDialog mYesNoDialog;
     private AlertDialog mYesNoCancelDialog;
+    private AlertDialog mTextInputDialog;
 
     public ProgressDialog getProgressDialog(String dialogName,
                                             String message,
@@ -215,7 +219,35 @@ public abstract class DialogController {
         return mYesNoCancelDialog;
     }
 
-    private AlertDialog generateAlertDialog(String title,
+    public AlertDialog getTextInputDialog(String dialogName,
+                                          String title,
+                                          String text,
+                                          String yesLabel,
+                                          boolean cancelable,
+                                          DialogActionHandler callback) {
+        if (mTextInputDialog == null) {
+            mTextInputDialog = generateAlertDialog(title, text,
+                    yesLabel, null, null, cancelable);
+            EditText vNoteInput = new EditText(SkeletonUtil.getStyledContext());
+            vNoteInput.setId(android.R.id.edit);
+            vNoteInput.setLines(3);
+            vNoteInput.setText(text);
+            mTextInputDialog.setView(vNoteInput,
+                    ViewUtil.dip2px(10), 0, ViewUtil.dip2px(10), 0);
+
+        } else {
+            mTextInputDialog.setTitle(title);
+            mTextInputDialog.setCancelable(cancelable);
+            if (mTextInputDialog.getButton(DialogInterface.BUTTON_POSITIVE) != null)
+                mTextInputDialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(yesLabel);
+        }
+
+        mTextInputDialog.setOnCancelListener(callback);
+        mCallbacks.put(dialogName, callback);
+        return mTextInputDialog;
+    }
+
+    protected AlertDialog generateAlertDialog(String title,
                                             String message,
                                             String yesLabel,
                                             String noLabel,
