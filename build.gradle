@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 28
     buildToolsVersion "$android_buildToolsVersion"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -36,9 +36,9 @@ android {
 }
 
 dependencies {
-    compile project(path: ':laxture_lib')
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile "com.android.support:design:$android_supportVersion"
-    compile "com.android.support:appcompat-v7:$android_supportVersion"
-    compile "com.android.support:preference-v7:$android_supportVersion"
+    api project(path: ':laxture_lib')
+    api 'com.google.code.gson:gson:2.8.0'
+    api "com.android.support:design:$android_supportVersion"
+    api "com.android.support:appcompat-v7:$android_supportVersion"
+    api "com.android.support:preference-v7:$android_supportVersion"
 }
