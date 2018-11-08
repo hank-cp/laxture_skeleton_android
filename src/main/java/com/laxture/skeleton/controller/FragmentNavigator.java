@@ -125,8 +125,9 @@ public class FragmentNavigator {
             Fragment managedFragment = mActivity.getSupportFragmentManager().findFragmentByTag(name);
             if (managedFragment == fragment) ft.attach(fragment);
             else {
-                ft.detach(managedFragment);
-                ft.add(android.R.id.tabcontent, fragment, name);
+                ft.replace(managedFragment.getId(), fragment);
+//                ft.detach(managedFragment);
+//                ft.add(android.R.id.tabcontent, fragment, name);
             }
         }
         ft.commit();
