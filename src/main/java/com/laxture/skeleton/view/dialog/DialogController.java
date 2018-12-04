@@ -222,6 +222,7 @@ public abstract class DialogController {
     public AlertDialog getTextInputDialog(String dialogName,
                                           String title,
                                           String text,
+                                          String hint,
                                           String yesLabel,
                                           boolean cancelable,
                                           DialogActionHandler callback) {
@@ -232,6 +233,7 @@ public abstract class DialogController {
             vNoteInput.setId(android.R.id.edit);
             vNoteInput.setLines(3);
             vNoteInput.setText(text);
+            vNoteInput.setHint(hint);
             mTextInputDialog.setView(vNoteInput,
                     ViewUtil.dip2px(10), 0, ViewUtil.dip2px(10), 0);
 
