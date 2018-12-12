@@ -32,7 +32,8 @@ public class GsonUtil {
             // skip static fields
             .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.PRIVATE)
             // skip fields annotated with @SkipJson
-            .setExclusionStrategies(new SkipFieldExclusionStrategy())
+            .addSerializationExclusionStrategy(new SkipFieldSerializeExclusionStrategy())
+            .addDeserializationExclusionStrategy(new SkipFieldDeserializeExclusionStrategy())
             .registerTypeAdapter(DateTime.class, new DateTimeTypeAdapter())
             .registerTypeAdapter(Boolean.class, new BooleanTypeAdapter())
             .registerTypeAdapter(boolean.class, new BooleanTypeAdapter()).create();
@@ -177,16 +178,32 @@ public class GsonUtil {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD, ElementType.TYPE})
-    public @interface SkipJson {}
+    public @interface SkipJson {
+        boolean serialize() default true;
+        boolean deserialize() default true;
+    }
 
-    private static class SkipFieldExclusionStrategy implements ExclusionStrategy {
-
+    private static class SkipFieldSerializeExclusionStrategy implements ExclusionStrategy {
         public boolean shouldSkipClass(Class<?> clazz) {
-            return clazz.getAnnotation(SkipJson.class) != null;
+            SkipJson annotation = clazz.getAnnotation(SkipJson.class);
+            return annotation != null && !annotation.serialize();
         }
 
         public boolean shouldSkipField(FieldAttributes field) {
-            return field.getAnnotation(SkipJson.class) != null;
+            SkipJson annotation = field.getAnnotation(SkipJson.class);
+            return annotation != null && !annotation.serialize();
+        }
+    }
+
+    private static class SkipFieldDeserializeExclusionStrategy implements ExclusionStrategy {
+        public boolean shouldSkipClass(Class<?> clazz) {
+            SkipJson annotation = clazz.getAnnotation(SkipJson.class);
+            return annotation != null && !annotation.deserialize();
+        }
+
+        public boolean shouldSkipField(FieldAttributes field) {
+            SkipJson annotation = field.getAnnotation(SkipJson.class);
+            return annotation != null && !annotation.deserialize();
         }
     }
 
