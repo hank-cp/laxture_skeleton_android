@@ -203,8 +203,8 @@ public abstract class DialogController {
             mYesNoCancelDialog = generateAlertDialog(title, message,
                     yesLabel, noLabel, cancelLabel, cancelable);
         } else {
-            mYesNoDialog.setTitle(title);
-            mYesNoDialog.setMessage(message);
+            mYesNoCancelDialog.setTitle(title);
+            mYesNoCancelDialog.setMessage(message);
             mYesNoCancelDialog.setCancelable(cancelable);
             if (mYesNoCancelDialog.getButton(DialogInterface.BUTTON_POSITIVE) != null)
                 mYesNoCancelDialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(yesLabel);
