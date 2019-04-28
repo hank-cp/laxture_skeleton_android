@@ -212,25 +212,25 @@ public class GsonUtil {
     public static String optString(JsonObject json, String fieldName) {
         if (json == null) return null;
         JsonElement field = json.get(fieldName);
-        return field != null ? field.getAsString() : null;
+        return (field != null && !field.isJsonNull()) ? field.getAsString() : null;
     }
 
     public static int optInt(JsonObject json, String fieldName) {
         if (json == null) return 0;
         JsonElement field = json.get(fieldName);
-        return field != null ? field.getAsInt() : 0;
+        return (field != null && !field.isJsonNull()) ? field.getAsInt() : 0;
     }
 
     public static long optLong(JsonObject json, String fieldName) {
         if (json == null) return 0;
         JsonElement field = json.get(fieldName);
-        return field != null ? field.getAsLong() : 0;
+        return (field != null && !field.isJsonNull()) ? field.getAsLong() : 0;
     }
 
     public static double optDouble(JsonObject json, String fieldName) {
         if (json == null) return 0;
         JsonElement field = json.get(fieldName);
-        return field != null ? field.getAsDouble() : 0;
+        return (field != null && !field.isJsonNull()) ? field.getAsDouble() : 0;
     }
 
     /**

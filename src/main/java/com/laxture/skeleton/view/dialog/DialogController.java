@@ -125,6 +125,10 @@ public abstract class DialogController {
     private AlertDialog mYesNoCancelDialog;
     private AlertDialog mTextInputDialog;
 
+    public void setDialogCallbacks(String dialogName, DialogActionHandler callback) {
+        mCallbacks.put(dialogName, callback);
+    }
+
     public ProgressDialog getProgressDialog(String dialogName,
                                             String message,
                                             boolean cancelable,
