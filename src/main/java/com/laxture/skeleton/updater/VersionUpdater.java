@@ -3,7 +3,6 @@ package com.laxture.skeleton.updater;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -11,9 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.Build;
-import android.support.v4.app.NotificationCompat;
-import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.task.TaskException;

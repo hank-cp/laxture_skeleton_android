@@ -37,8 +37,8 @@ android {
 
 dependencies {
     api project(path: ':laxture_lib')
-    api 'com.google.code.gson:gson:2.8.0'
-    api "com.android.support:design:$android_supportVersion"
-    api "com.android.support:appcompat-v7:$android_supportVersion"
-    api "com.android.support:preference-v7:$android_supportVersion"
+    api 'com.google.code.gson:gson:2.8.6'
+    api 'com.google.android.material:material:1.0.0'
+    api 'androidx.appcompat:appcompat:1.0.0'
+    api 'androidx.preference:preference:1.0.0'
 }
