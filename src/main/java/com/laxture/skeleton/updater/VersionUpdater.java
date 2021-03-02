@@ -350,9 +350,9 @@ public class VersionUpdater {
             if (DIALOG_DOWNLOAD.equals(dialogTag)) {
                 VersionInfo versionInfo = (VersionInfo) params[0];
                 String updateMsg = RuntimeContext.getVersionCode() < versionInfo.forceUpdateUnderBuildNum
-                        ? RuntimeContext.getString(R.string.msg_haveUpdate,
-                        versionInfo.getVersionName(), versionInfo.getFeaturesWords())
-                        : RuntimeContext.getString(R.string.msg_forceUpdate);
+                        ? RuntimeContext.getString(R.string.msg_forceUpdate)
+                        : RuntimeContext.getString(R.string.msg_haveUpdate,
+                        versionInfo.getVersionName(), versionInfo.getFeaturesWords());
                 return getYesNoDialog(dialogTag,
                         RuntimeContext.getString(R.string.title_haveUpdate),
                         updateMsg,
