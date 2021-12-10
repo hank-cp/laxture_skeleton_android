@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-import androidx.core.app.NotificationCompat;
-
 import com.laxture.lib.RuntimeContext;
 import com.laxture.lib.task.TaskException;
 import com.laxture.lib.task.TaskListener;
@@ -28,6 +26,8 @@ import com.laxture.skeleton.view.dialog.DialogController.DialogActionHandler;
 import org.joda.time.DateTime;
 
 import java.io.File;
+
+import androidx.core.app.NotificationCompat;
 
 public class VersionUpdater {
 
@@ -348,7 +348,12 @@ public class VersionUpdater {
         @Override
         public Dialog prepareDialog(String dialogTag, Object... params) {
             if (DIALOG_DOWNLOAD.equals(dialogTag)) {
-                VersionInfo versionInfo = (VersionInfo) params[0];
+                VersionInfo versionInfo;
+                if (params.length > 0) {
+                    versionInfo = (VersionInfo) params[0];
+                } else {
+                    versionInfo = new VersionInfo();
+                }
                 String updateMsg = RuntimeContext.getVersionCode() < versionInfo.forceUpdateUnderBuildNum
                         ? RuntimeContext.getString(R.string.msg_forceUpdate)
                         : RuntimeContext.getString(R.string.msg_haveUpdate,
