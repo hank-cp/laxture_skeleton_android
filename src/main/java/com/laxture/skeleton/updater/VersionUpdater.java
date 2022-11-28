@@ -354,7 +354,8 @@ public class VersionUpdater {
                 } else {
                     versionInfo = new VersionInfo();
                 }
-                String updateMsg = RuntimeContext.getVersionCode() < versionInfo.forceUpdateUnderBuildNum
+                boolean forceUpdate = RuntimeContext.getVersionCode() < versionInfo.forceUpdateUnderBuildNum;
+                String updateMsg = forceUpdate
                         ? RuntimeContext.getString(R.string.msg_forceUpdate)
                         : RuntimeContext.getString(R.string.msg_haveUpdate,
                         versionInfo.getVersionName(), versionInfo.getFeaturesWords());
@@ -363,7 +364,7 @@ public class VersionUpdater {
                         updateMsg,
                         RuntimeContext.getString(R.string.label_download),
                         RuntimeContext.getString(R.string.label_later), true,
-                        mDownloadDialogCallback);
+                    forceUpdate ? mForceDownloadDialogCallback : mDownloadDialogCallback);
 
             } else if (DIALOG_INSTALL.equals(dialogTag)) {
                 return getYesNoDialog(dialogTag,
@@ -394,6 +395,23 @@ public class VersionUpdater {
     public static DateTime getNextCheckUpdateTime() {
         return DateTime.now().plusDays(3);
     }
+
+    private DialogActionHandler mForceDownloadDialogCallback = new DialogActionHandler() {
+        @Override
+        public void onYes(DialogInterface dialog) {
+            startDownloadApk();
+        }
+
+        @Override
+        public void onNo(DialogInterface dialog) {
+            System.exit(0);
+        }
+
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            release();
+        }
+    };
 
     private DialogActionHandler mDownloadDialogCallback = new DialogActionHandler() {
         @Override
