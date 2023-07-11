@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
+    namespace 'com.laxture.skeleton'
+    compileSdk 34
     buildToolsVersion "$android_buildToolsVersion"
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdk 18
+        targetSdk 34
         versionCode 1
         versionName "1.0"
     }
@@ -26,8 +27,8 @@ android {
         androidTest.java.srcDirs = ['tests/src']
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     packagingOptions {
@@ -37,8 +38,8 @@ android {
 
 dependencies {
     api project(path: ':laxture_lib')
-    api 'com.google.code.gson:gson:2.8.6'
-    api 'com.google.android.material:material:1.0.0'
-    api 'androidx.appcompat:appcompat:1.0.0'
-    api 'androidx.preference:preference:1.0.0'
+    api 'com.google.code.gson:gson:2.10.1'
+    api 'com.google.android.material:material:1.9.0'
+    api 'androidx.appcompat:appcompat:1.6.1'
+    api 'androidx.preference:preference:1.2.0'
 }
