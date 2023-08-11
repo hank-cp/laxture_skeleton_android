@@ -183,14 +183,16 @@ public class FragmentNavigator {
         if (currentFragment instanceof DialogFragment) {
             ((DialogFragment) currentFragment).dismiss();
         } else {
-            mActivity.getSupportFragmentManager().popBackStackImmediate();
-            if (backArgs != null) {
-                Intent intent = new Intent();
-                intent.putExtras(backArgs);
-                intent.putExtra(Constants.ARGUMENT_BACK_FROM_FRAGMENT, currentFragmentName);
-                getTopFragment().onActivityResult(
+            try {
+                mActivity.getSupportFragmentManager().popBackStackImmediate();
+                if (backArgs != null) {
+                    Intent intent = new Intent();
+                    intent.putExtras(backArgs);
+                    intent.putExtra(Constants.ARGUMENT_BACK_FROM_FRAGMENT, currentFragmentName);
+                    getTopFragment().onActivityResult(
                         REQUEST_CODE_NAVIGATOR, Activity.RESULT_OK, intent);
-            }
+                }
+            } catch (IllegalStateException ignored) {}
         }
         return true;
     }
