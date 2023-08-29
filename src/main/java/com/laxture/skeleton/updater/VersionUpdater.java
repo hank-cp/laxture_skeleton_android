@@ -280,7 +280,7 @@ public class VersionUpdater {
                 PendingIntent contentIntent = PendingIntent.getActivity(
                         RuntimeContext.getApplication(), 0,
                         IntentUtil.getApkInstallerIntent(file),
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
                 builder.setContentIntent(contentIntent);
                 mNotificationManager.notify(R.id.notification_download_done, builder.build());
 
@@ -309,7 +309,7 @@ public class VersionUpdater {
                 PendingIntent contentIntent = PendingIntent.getActivity(
                         RuntimeContext.getApplication(), 0,
                         IntentUtil.getBrowserIntent(mUpdateSiteUrl),
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                 builder.setContentIntent(contentIntent);
                 mNotificationManager.notify(R.id.notification_download_failed, builder.build());
 
@@ -321,7 +321,8 @@ public class VersionUpdater {
         mDownloadNotificationBuilder = new NotificationCompat.Builder(RuntimeContext.getApplication());
         mDownloadNotificationBuilder.setSmallIcon(android.R.drawable.stat_sys_download);
         mDownloadNotificationBuilder.setContentTitle(mApkDownloadTask.getDownloadFile().getName());
-        mDownloadNotificationBuilder.setContentIntent(PendingIntent.getActivity(RuntimeContext.getApplication(), 0, new Intent(), 0));
+        mDownloadNotificationBuilder.setContentIntent(PendingIntent.getActivity(RuntimeContext.getApplication(),
+            0, new Intent(), PendingIntent.FLAG_IMMUTABLE));
         mDownloadNotificationBuilder.setProgress(100, 0, false);
         mDownloadNotificationBuilder.setWhen(0);
         mDownloadNotificationBuilder.setOngoing(true);
