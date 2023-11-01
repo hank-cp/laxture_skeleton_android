@@ -22,8 +22,6 @@ import java.util.HashMap;
 
 public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
 
-    private static JsonParser parser = new JsonParser();
-
     protected JsonObject resultJson;
 
     private Long mTotal;
@@ -56,7 +54,7 @@ public abstract class AbstractApiTask<Result> extends HttpTextTask<Result> {
         try {
             String str = getResponseText();
             LLog.d("Response :: %s", str);
-            json = (JsonObject) parser.parse(str);
+            json = (JsonObject) JsonParser.parseString(str);
         } catch (JsonSyntaxException e) {
             LLog.w("JSON format error", e);
             setErrorDetails(new ApiException(ApiException.RESPONSE_DATA_FORMAT_ERROR,
