@@ -308,7 +308,7 @@ public class VersionUpdater {
                 builder.setTicker(text);
                 PendingIntent contentIntent = PendingIntent.getActivity(
                         RuntimeContext.getApplication(), 0,
-                        IntentUtil.getBrowserIntent(mUpdateSiteUrl),
+                        IntentUtil.getBrowserIntent(mVersionInfo.url),
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                 builder.setContentIntent(contentIntent);
                 mNotificationManager.notify(R.id.notification_download_failed, builder.build());
@@ -364,7 +364,7 @@ public class VersionUpdater {
                         RuntimeContext.getString(R.string.title_haveUpdate),
                         updateMsg,
                         RuntimeContext.getString(R.string.label_download),
-                        RuntimeContext.getString(R.string.label_later), true,
+                        RuntimeContext.getString(R.string.label_later), false,
                     forceUpdate ? mForceDownloadDialogCallback : mDownloadDialogCallback);
 
             } else if (DIALOG_INSTALL.equals(dialogTag)) {
